@@ -32,11 +32,12 @@ api.interceptors.response.use(
         const rToken = localStorage.getItem('refreshToken')
         if (!rToken) throw new Error('No refresh token')
         const { data } = await axios.post('/api/auth/refresh', { refreshToken: rToken })
-        localStorage.setItem('accessToken', data.token)
+        const newToken = data.accessToken ?? data.token
+        localStorage.setItem('accessToken', newToken)
         if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken)
-        queue.forEach(cb => cb(data.token))
+        queue.forEach(cb => cb(newToken))
         queue = []
-        original.headers.Authorization = `Bearer ${data.token}`
+        original.headers.Authorization = `Bearer ${newToken}`
         return api(original)
       } catch {
         localStorage.clear()
