@@ -1,6 +1,6 @@
 // ─── Auth ────────────────────────────────────────────────────────────────────
 export interface LoginRequest { username: string; password: string }
-export interface AuthResponse { token: string; refreshToken: string; username: string; role: string }
+export interface AuthResponse { accessToken: string; refreshToken: string; username: string; role: string; tokenType?: string; name?: string }
 
 // ─── Common ──────────────────────────────────────────────────────────────────
 export interface PageResponse<T> {
