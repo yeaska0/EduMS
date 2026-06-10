@@ -1,0 +1,12 @@
+target/
+*.jar
+*.war
+*.class
+.mvn/wrapper/maven-wrapper.jar
+application-local.properties
+application-prod.properties
+.env
+.idea/
+*.iml
+.DS_Store
+spring-boot-*.log
