@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { attendanceApi, coursesApi, enrollmentsApi } from '../api/endpoints'
 import type { Course, AttendanceStatus, Attendance } from '../types'
 
-const STATUSES: { value: AttendanceStatus; label: string; color: string; icon: React.ReactNode }[] = [
+const STATUSES: { value: AttendanceStatus; label: string; color: string; icon: JSX.Element }[] = [
   { value: 'PRESENT', label: 'Присутствовал', color: 'text-emerald-400', icon: <CheckCircle size={15} /> },
   { value: 'ABSENT',  label: 'Отсутствовал',  color: 'text-red-400',     icon: <XCircle size={15} /> },
   { value: 'LATE',    label: 'Опоздал',        color: 'text-yellow-400',  icon: <Clock size={15} /> },
