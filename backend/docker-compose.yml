@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-  # ── PostgreSQL ──────────────────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: edums-db
@@ -20,7 +19,6 @@ services:
       timeout: 5s
       retries: 10
 
-  # ── Spring Boot Backend ─────────────────────────────────────────────────────
   backend:
     build:
       context: .
@@ -34,18 +32,20 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       JWT_SECRET: ${JWT_SECRET:-edums-super-secret-key-change-in-production}
+      DATABASE_URL: jdbc:postgresql://db:5432/student_management
+      PGUSER: ${DB_USER:-postgres}
+      PGPASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "8080:8080"
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/api-docs || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/v3/api-docs || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  # ── React Frontend ──────────────────────────────────────────────────────────
   frontend:
     build:
-      context: ../EduMS_v2
+      context: ../frontend
       dockerfile: Dockerfile
     container_name: edums-frontend
     restart: unless-stopped
