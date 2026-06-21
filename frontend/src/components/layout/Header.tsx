@@ -36,7 +36,7 @@ export default function Header() {
             className={`px-2.5 py-1 rounded-lg text-xs font-medium uppercase transition
               ${lang === l
                 ? 'bg-[#6c63ff] text-white'
-                : 'text-white/40 hover:text-white hover:bg-white/5'
+                : 'dark:text-white/40 dark:hover:text-white dark:hover:bg-white/5 text-slate-400 hover:text-slate-700 hover:bg-slate-100'
               }`}
           >
             {l}
@@ -46,13 +46,13 @@ export default function Header() {
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
-          className="p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition"
+          className="p-2 rounded-xl dark:text-white/40 dark:hover:text-white dark:hover:bg-white/5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
         >
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
         {/* Notifications (placeholder) */}
-        <button className="relative p-2 rounded-xl text-white/40 hover:text-white hover:bg-white/5 transition">
+        <button className="relative p-2 rounded-xl dark:text-white/40 dark:hover:text-white dark:hover:bg-white/5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
           <Bell size={18} />
         </button>
       </div>

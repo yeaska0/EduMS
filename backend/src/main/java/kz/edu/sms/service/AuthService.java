@@ -55,6 +55,14 @@ public class AuthService {
 
     public void logout(RefreshRequest req){ refreshTokenService.deleteByToken(req.getRefreshToken()); }
 
+    public void changePassword(String username, ChangePasswordRequest req){
+        User user = userRepo.findByUsername(username).orElseThrow();
+        if(!encoder.matches(req.getCurrentPassword(), user.getPassword()))
+            throw new kz.edu.sms.exception.BadRequestException("Current password is incorrect");
+        user.setPassword(encoder.encode(req.getNewPassword()));
+        userRepo.save(user);
+    }
+
     private AuthResponse build(User u, String access, String refresh){
         String name = (u.getFirstName()!=null?u.getFirstName()+" ":"") + (u.getLastName()!=null?u.getLastName():"");
         return AuthResponse.builder()

@@ -9,6 +9,8 @@ import GradesPage from './pages/GradesPage'
 import EnrollmentsPage from './pages/EnrollmentsPage'
 import ProfilePage from './pages/ProfilePage'
 import SettingsPage from './pages/SettingsPage'
+import UsersPage from './pages/UsersPage'
+import AttendancePage from './pages/AttendancePage'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const auth = useAuthStore(s => s.isAuthenticated)
@@ -27,6 +29,8 @@ export default function App() {
         <Route path="courses" element={<CoursesPage />} />
         <Route path="grades" element={<GradesPage />} />
         <Route path="enrollments" element={<EnrollmentsPage />} />
+        <Route path="attendance" element={<AttendancePage />} />
+        <Route path="users" element={<UsersPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>

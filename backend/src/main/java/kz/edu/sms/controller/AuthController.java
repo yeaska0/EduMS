@@ -6,6 +6,8 @@ import kz.edu.sms.dto.auth.*;
 import kz.edu.sms.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController @RequestMapping("/api/auth") @RequiredArgsConstructor
@@ -31,6 +33,14 @@ public class AuthController {
     @PostMapping("/logout") @Operation(summary="Logout")
     public ResponseEntity<Void> logout(@Valid @RequestBody RefreshRequest req){
         service.logout(req);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/change-password") @Operation(summary="Change password")
+    public ResponseEntity<Void> changePassword(
+            @AuthenticationPrincipal UserDetails ud,
+            @Valid @RequestBody ChangePasswordRequest req){
+        service.changePassword(ud.getUsername(), req);
         return ResponseEntity.noContent().build();
     }
 }

@@ -115,6 +115,49 @@ export interface EnrollmentRequest {
   courseId: number
 }
 
+// ─── User ────────────────────────────────────────────────────────────────────
+export interface UserProfile {
+  id: number
+  username: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  bio?: string
+  role: string
+  createdAt?: string
+}
+
+export interface UserProfileRequest {
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  bio?: string
+}
+
+// ─── Attendance ──────────────────────────────────────────────────────────────
+export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'EXCUSED'
+
+export interface Attendance {
+  id: number
+  studentId: number
+  studentName: string
+  courseId: number
+  courseName: string
+  date: string
+  status: AttendanceStatus
+  note?: string
+}
+
+export interface AttendanceRequest {
+  studentId: number
+  courseId: number
+  date: string
+  status: AttendanceStatus
+  note?: string
+}
+
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 export interface DashboardStats {
   totalStudents: number

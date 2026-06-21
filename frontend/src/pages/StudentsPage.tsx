@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Plus, Pencil, Trash2, Search, GraduationCap } from 'lucide-react'
+import { Plus, Pencil, Trash2, Search, GraduationCap, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { studentsApi, coursesApi } from '../api/endpoints'
 import type { Student, StudentRequest, StudentStatus, Course } from '../types'
@@ -101,6 +101,21 @@ export default function StudentsPage() {
     load(0, search)
   }
 
+  const exportCSV = async () => {
+    try {
+      const { data } = await studentsApi.list(0, 10000)
+      const rows = [
+        ['ID', 'Имя', 'Фамилия', 'Email', 'Телефон', 'Специальность', 'GPA', 'Статус'],
+        ...data.content.map(s => [s.id, s.firstName, s.lastName, s.email, s.phone ?? '', s.major ?? '', s.gpa, s.status])
+      ]
+      const csv = rows.map(r => r.join(',')).join('\n')
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url; a.download = 'students.csv'; a.click()
+      URL.revokeObjectURL(url)
+    } catch { toast.error('Ошибка экспорта') }
+  }
+
   const f = (k: keyof StudentRequest, v: string) =>
     setForm(p => ({ ...p, [k]: v }))
 
@@ -117,6 +132,9 @@ export default function StudentsPage() {
             onChange={e => setSearch(e.target.value)}
           />
         </form>
+        <button onClick={exportCSV} className="btn-ghost flex-shrink-0">
+          <Download size={16} /> CSV
+        </button>
         <button onClick={openAdd} className="btn-primary flex-shrink-0">
           <Plus size={16} /> {tFn('addStudent')}
         </button>

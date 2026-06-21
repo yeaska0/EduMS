@@ -16,6 +16,8 @@ public class User implements UserDetails {
     @Column(unique=true) private String email;
     private String firstName;
     private String lastName;
+    private String phone;
+    @Column(columnDefinition = "TEXT") private String bio;
     @Enumerated(EnumType.STRING) @Builder.Default private Role role = Role.ADMIN;
     @Builder.Default private boolean enabled = true;
     @Column(updatable=false) @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();

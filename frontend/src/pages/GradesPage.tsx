@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { Plus, Pencil, Trash2, Award } from 'lucide-react'
+import { Plus, Pencil, Trash2, Award, Download } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { gradesApi, studentsApi, coursesApi } from '../api/endpoints'
 import type { Grade, GradeRequest, GradeType, Student, Course } from '../types'
@@ -35,6 +35,7 @@ export default function GradesPage() {
 
   const [filterStudent, setFilterStudent] = useState('')
   const [filterCourse, setFilterCourse] = useState('')
+  const [search, setSearch] = useState('')
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Grade | null>(null)
@@ -108,6 +109,29 @@ export default function GradesPage() {
     } finally { setDeleting(false) }
   }
 
+  const exportCSV = async () => {
+    try {
+      const { data } = await gradesApi.list(0, 10000)
+      const rows = [
+        ['ID', 'Студент', 'Курс', 'Тип', 'Оценка', 'Макс', '%', 'Семестр', 'Дата'],
+        ...data.content.map(g => [
+          g.id, g.studentName, g.courseName, g.type,
+          g.score, g.maxScore, Math.round((g.score/g.maxScore)*100),
+          g.semester ?? '', g.date ?? ''
+        ])
+      ]
+      const csv = rows.map(r => r.join(',')).join('\n')
+      const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a'); a.href = url; a.download = 'grades.csv'; a.click()
+      URL.revokeObjectURL(url)
+    } catch { toast.error('Ошибка экспорта') }
+  }
+
+  const filteredGrades = search
+    ? grades.filter(g => g.studentName.toLowerCase().includes(search.toLowerCase()) || g.courseName.toLowerCase().includes(search.toLowerCase()))
+    : grades
+
   const f = (k: keyof GradeRequest, v: string | number) =>
     setForm(p => ({ ...p, [k]: v }))
 
@@ -123,6 +147,9 @@ export default function GradesPage() {
           <option value="">Все курсы</option>
           {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
+        <button onClick={exportCSV} className="btn-ghost flex-shrink-0">
+          <Download size={16} /> CSV
+        </button>
         <button onClick={openAdd} className="btn-primary flex-shrink-0">
           <Plus size={16} /> {tFn('addGrade')}
         </button>
@@ -152,7 +179,7 @@ export default function GradesPage() {
                     <div className="text-white/30 text-sm">{tFn('noData')}</div>
                   </td>
                 </tr>
-              ) : grades.map(g => (
+              ) : filteredGrades.map(g => (
                 <tr key={g.id}>
                   <td className="text-white text-sm font-medium">{g.studentName}</td>
                   <td className="text-white/60 text-sm">{g.courseName}</td>
