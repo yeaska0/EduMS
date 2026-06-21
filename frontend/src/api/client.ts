@@ -1,15 +1,19 @@
-import axios from 'axios'
+import axios from "axios"
 
-const api = axios.create({ baseURL: '/api', timeout: 10000 })
+const api = axios.create({
+  baseURL: "/api",
+  timeout: 10000,
+  headers: {
+    "ngrok-skip-browser-warning": "true"
+  }
+})
 
-// ─── Request interceptor: attach token ───────────────────────────────────────
 api.interceptors.request.use(cfg => {
-  const token = localStorage.getItem('accessToken')
+  const token = localStorage.getItem("accessToken")
   if (token) cfg.headers.Authorization = `Bearer ${token}`
   return cfg
 })
 
-// ─── Response interceptor: refresh on 401 ───────────────────────────────────
 let refreshing = false
 let queue: ((token: string) => void)[] = []
 
@@ -29,19 +33,23 @@ api.interceptors.response.use(
       }
       refreshing = true
       try {
-        const rToken = localStorage.getItem('refreshToken')
-        if (!rToken) throw new Error('No refresh token')
-        const { data } = await axios.post('/api/auth/refresh', { refreshToken: rToken })
+        const rToken = localStorage.getItem("refreshToken")
+        if (!rToken) throw new Error("No refresh token")
+        const { data } = await axios.post("/api/auth/refresh",
+          { refreshToken: rToken },
+          { headers: { "ngrok-skip-browser-warning": "true" } }
+        )
         const newToken = data.accessToken ?? data.token
-        localStorage.setItem('accessToken', newToken)
-        if (data.refreshToken) localStorage.setItem('refreshToken', data.refreshToken)
+        localStorage.setItem("accessToken", newToken)
+        if (data.refreshToken)
+          localStorage.setItem("refreshToken", data.refreshToken)
         queue.forEach(cb => cb(newToken))
         queue = []
         original.headers.Authorization = `Bearer ${newToken}`
         return api(original)
       } catch {
         localStorage.clear()
-        window.location.href = '/login'
+        window.location.href = "/login"
         return Promise.reject(err)
       } finally {
         refreshing = false
