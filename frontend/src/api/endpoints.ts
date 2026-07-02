@@ -7,7 +7,12 @@ import type {
   Enrollment, EnrollmentRequest,
   DashboardStats, PageResponse,
   UserProfile, UserProfileRequest,
-  Attendance, AttendanceRequest
+  Attendance, AttendanceRequest,
+  Task, TaskRequest,
+  Note, NoteRequest,
+  ScheduleEvent, ScheduleRequest,
+  PomodoroSession, PomodoroRequest,
+  AIRequest, AIResponse,
 } from '../types'
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
@@ -80,4 +85,40 @@ export const attendanceApi = {
     api.get<Attendance[]>(`/attendance/course/${courseId}/date/${date}`),
   byStudentAndCourse: (studentId: number, courseId: number) =>
     api.get<Attendance[]>(`/attendance/student/${studentId}/course/${courseId}`),
+}
+
+// ─── Tasks ───────────────────────────────────────────────────────────────────
+export const tasksApi = {
+  list: () => api.get<Task[]>('/tasks'),
+  create: (data: TaskRequest) => api.post<Task>('/tasks', data),
+  update: (id: number, data: TaskRequest) => api.put<Task>(`/tasks/${id}`, data),
+  delete: (id: number) => api.delete(`/tasks/${id}`),
+}
+
+// ─── Notes ───────────────────────────────────────────────────────────────────
+export const notesApi = {
+  list: (search?: string) => api.get<Note[]>('/notes', { params: { search } }),
+  create: (data: NoteRequest) => api.post<Note>('/notes', data),
+  update: (id: number, data: NoteRequest) => api.put<Note>(`/notes/${id}`, data),
+  delete: (id: number) => api.delete(`/notes/${id}`),
+}
+
+// ─── Schedule ─────────────────────────────────────────────────────────────────
+export const scheduleApi = {
+  list: () => api.get<ScheduleEvent[]>('/schedule'),
+  create: (data: ScheduleRequest) => api.post<ScheduleEvent>('/schedule', data),
+  update: (id: number, data: ScheduleRequest) => api.put<ScheduleEvent>(`/schedule/${id}`, data),
+  delete: (id: number) => api.delete(`/schedule/${id}`),
+}
+
+// ─── Pomodoro ─────────────────────────────────────────────────────────────────
+export const pomodoroApi = {
+  list: () => api.get<PomodoroSession[]>('/pomodoro'),
+  stats: () => api.get<{ completed: number }>('/pomodoro/stats'),
+  save: (data: PomodoroRequest) => api.post<PomodoroSession>('/pomodoro', data),
+}
+
+// ─── AI ──────────────────────────────────────────────────────────────────────
+export const aiApi = {
+  ask: (data: AIRequest) => api.post<AIResponse>('/ai/ask', data),
 }

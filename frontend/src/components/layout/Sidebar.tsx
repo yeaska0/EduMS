@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, BookOpen, Award, ClipboardList,
-  User, Settings, LogOut, GraduationCap, CalendarCheck, ShieldCheck
+  User, Settings, LogOut, GraduationCap, CalendarCheck, ShieldCheck,
+  CheckSquare, Calendar, FileText, Timer, Sparkles
 } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useT } from '../../hooks/useT'
@@ -15,6 +16,14 @@ const NAV = [
   { to: '/grades', icon: Award, key: 'grades' as const },
   { to: '/enrollments', icon: ClipboardList, key: 'enrollments' as const },
   { to: '/attendance', icon: CalendarCheck, label: 'Посещаемость' },
+]
+
+const STUDYFLOW_NAV = [
+  { to: '/tasks',    icon: CheckSquare, label: 'Задачи' },
+  { to: '/calendar', icon: Calendar,    label: 'Расписание' },
+  { to: '/notes',    icon: FileText,    label: 'Заметки' },
+  { to: '/pomodoro', icon: Timer,       label: 'Помидор' },
+  { to: '/ai',       icon: Sparkles,    label: 'AI Помощник' },
 ]
 
 const ADMIN_NAV = [
@@ -47,30 +56,42 @@ export default function Sidebar() {
           <GraduationCap size={20} className="text-white" />
         </div>
         <div>
-          <div className="font-bold dark:text-white text-slate-900 text-sm leading-tight">EduMS</div>
-          <div className="text-[10px] dark:text-white/30 text-slate-400 uppercase tracking-wider">Management</div>
+          <div className="font-bold dark:text-white text-slate-900 text-sm leading-tight">StudyFlow AI</div>
+          <div className="text-[10px] dark:text-white/30 text-slate-400 uppercase tracking-wider">Student OS</div>
         </div>
       </div>
 
       {/* Main nav */}
-      <nav className="flex-1 flex flex-col gap-0.5 py-2">
+      <nav className="flex-1 flex flex-col gap-0.5 py-2 overflow-y-auto">
         {NAV.map(({ to, icon: Icon, key, exact, label }: any) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={exact}
-            className={({ isActive }) => clsx('nav-item', isActive && 'active')}
-          >
+          <NavLink key={to} to={to} end={exact}
+            className={({ isActive }) => clsx('nav-item', isActive && 'active')}>
             <Icon size={18} />
             <span>{key ? tFn(key) : label}</span>
           </NavLink>
         ))}
         {role === 'ADMIN' && ADMIN_NAV.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) => clsx('nav-item', isActive && 'active')}
-          >
+          <NavLink key={to} to={to}
+            className={({ isActive }) => clsx('nav-item', isActive && 'active')}>
+            <Icon size={18} />
+            <span>{label}</span>
+          </NavLink>
+        ))}
+
+        {/* StudyFlow AI divider */}
+        <div className="mx-3 mt-3 mb-1">
+          <div className="flex items-center gap-2">
+            <div className="flex-1 border-t dark:border-white/[0.06] border-slate-200" />
+            <span className="text-[9px] font-bold tracking-widest uppercase dark:text-white/20 text-slate-400 flex items-center gap-1">
+              <Sparkles size={8} /> StudyFlow
+            </span>
+            <div className="flex-1 border-t dark:border-white/[0.06] border-slate-200" />
+          </div>
+        </div>
+
+        {STUDYFLOW_NAV.map(({ to, icon: Icon, label }) => (
+          <NavLink key={to} to={to}
+            className={({ isActive }) => clsx('nav-item', isActive && 'active')}>
             <Icon size={18} />
             <span>{label}</span>
           </NavLink>
